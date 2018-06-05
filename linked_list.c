@@ -73,7 +73,7 @@ void free_list(list l) {
   node first = get_header(l);
 	node nxt = next(first); //curr->next;
 	while (nxt != NULL) {
-		free(first);
+		node_free(first);
 		first = nxt;
 	}
 	free(nxt);
@@ -83,6 +83,7 @@ void add(list l, nodeType x) {
   node n = get_footer(l);
 	printf("here\n");
 	n->prev->next = node_malloc();
+	printf("there\n");
 	// next(prev(n)) = malloc(sizeof(struct node));
 	set_node_value(n->prev->next, x);
 	// prev(n)->get_node_value(next) = x;
@@ -112,7 +113,7 @@ int main(void) {
 	printf("header x : %d\n", x);
   add(&example, 5);
   add(&example, 10);
-  // add(&example, 2);
+  add(&example, 2);
   // add(&example, 15);
 	find(&example, 15);
 	find(&example, 2);
