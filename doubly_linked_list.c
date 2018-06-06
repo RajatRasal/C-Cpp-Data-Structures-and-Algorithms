@@ -12,7 +12,7 @@ struct doubly_linked_list {
 
 struct node {
   int key;
-  struct node *prev;
+  struct node prev;
   struct node *next;
 };
 
