@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -12,7 +13,7 @@ struct doubly_linked_list {
 
 struct node {
   int key;
-  struct node prev;
+  struct node *prev;
   struct node *next;
 };
 
@@ -34,22 +35,6 @@ void init_doubly_linked_list(struct doubly_linked_list *l) {
   l->footer->prev = l->header;
 }
 
-static node get_header(struct doubly_linked_list *l) {
-  return l->header; 
-}
-
-static node get_footer(struct doubly_linked_list *l) {
-  return l->footer;
-}
-
-static node next(struct node *n) {
-  return n->next;
-}
-
-static node prev(struct node *n) {
-  return next(n);
-}
-
 static int get_node_key(struct node *n) {
   return n->key;
 }
@@ -63,18 +48,18 @@ static void free_node(struct node *n) {
 }
 
 void free_doubly_linked_list(struct doubly_linked_list *l) {
-  node first = get_header(l);
-  node nxt = next(first); 
+  node first = l->header;
+  node nxt = first->next; 
   while (nxt != NULL) {
     free_node(first);
     first = nxt;
-    nxt = next(nxt); 
+    nxt = nxt->next; 
   }
   free_node(nxt);
 }
 
 void add(struct doubly_linked_list *l, int x) {
-  node n = get_footer(l);
+  node n = l->footer;
   node tmp = node_malloc();
   set_node_key(tmp, x);
   tmp->next = n;
@@ -84,7 +69,7 @@ void add(struct doubly_linked_list *l, int x) {
 };
 
 node find(struct doubly_linked_list *l, int x) {
-  node curr = get_header(l)->next;
+  node curr = l->header->next;
   while (curr != NULL) {
     int y = get_node_key(curr);
     if (y == x) {
@@ -96,47 +81,25 @@ node find(struct doubly_linked_list *l, int x) {
 }
 
 void delete(struct doubly_linked_list *l, int x) {
-  printf("%p\n", find(l,x));
+  // printf("%p\n", find(l,x));
   struct node *toDelete = find(l, x);
-  //printf("toDelete key: %d\n", toDelete->key);
-  // struct node **toDeletePtr = &toDelete;
-  // find returns header or footer
   if (toDelete != NULL) {
-    //printf("1\n");
-    //printf("toDelete->prev->next->key: %d\n", toDelete->prev->next->key);
-    toDelete->prev->next = toDelete->next;
-    //printf("1\n");
-    //printf("toDelete->next->prev->key: %d\n", toDelete->next->prev->key);
-    toDelete->next->prev = toDelete->prev;
-    //printf("1\n");
-    free_node(toDelete);
+    if (memcmp(toDelete, l->header, sizeof(struct node)) == 0 
+        || memcmp(toDelete, l->footer, sizeof(struct node)) == 0) {
+      printf("THIS IS BEING DETECTED\n");
+      return;
+    } else {
+      toDelete->prev->next = toDelete->next;
+      toDelete->next->prev = toDelete->prev;
+      free_node(toDelete);
+    }
   } else {
     printf("NULL\n");
   }
-/*
-  struct node *tmp = toDelete->prev;
-  struct node *tmp2 = toDelete->next;
-  printf("1\n");
-  toDelete->next->prev = tmp;
-  printf("1\n");
-  tmp = toDelete->next;
-  printf("1\n");
-  toDelete->prev->next = tmp2;
-*/
-  // printf("%d\n", toDelete->prev->key);
-/*
-  printf("%d\n", toDelete->next->key);
-  printf("%d\n", toDelete->next->prev->key);
-  printf("%d\n", toDelete->prev->next->key);
-*/
-/*
-  toDelete->next->prev = toDelete->prev;
-  toDelete->prev->next = toDelete->next;
-*/
 }
 
 void printList(struct doubly_linked_list *l) {
-  node curr = get_header(l)->next;
+  node curr = l->header->next;
   printf("NULL <-> ");
   while (curr != NULL) {
     char buff[12]; 
@@ -154,16 +117,25 @@ void printList(struct doubly_linked_list *l) {
 int main(void) {
   struct doubly_linked_list example;
   init_doubly_linked_list(&example);
+  delete(&example, 0);
+  delete(&example, 5);
   add(&example, 5);
   add(&example, 10);
   add(&example, 2);
   add(&example, 15);
+  add(&example, 0);
   add(&example, 120);
   find(&example, 10);
   printList(&example);
   delete(&example, 10);
   delete(&example, 120);
   delete(&example, 1);
+  delete(&example, 0);
   printList(&example);
+  delete(&example, 15);
+  delete(&example, 5);
+  delete(&example, 2);
+  printList(&example);
+  delete(&example, 0);
   free_doubly_linked_list(&example);
 }
