@@ -133,6 +133,23 @@ node **init_sym_table(void) {
   return symTable;
 }
 
+void free_sym_table(node** sym_table) {
+  for (uint32_t i; i < tableSize; i++) {
+    free_linked_list(sym_table[i]);
+  }
+  free(sym_table); 
+}
+
+void add_to_sym_table(node** sym_table, char label[MAX_LINE_LENGTH], uint32_t address) {
+  uint32_t bucket = hash(label);
+  push(&sym_table[bucket], label, address);
+}
+
+uint32_t find_in_sym_table(node** sym_table, char label[MAX_LINE_LENGTH], uint32_t address) {
+  uint32_t bucket = hash(label);
+  return find(sym_table[bucket], label);
+}
+
 void print_linked_list(node *head) {
   node *curr = head;
   while (curr != NULL) {
@@ -163,8 +180,14 @@ uint32_t main(void) {
   uint32_t bucket = hash("label1");
   uint32_t bucket2 = hash("label2");
   // sym_table[bucket] = init_linked_list();
+  /*
   push(&sym_table[bucket], "label1", 0x30000000);
   push(&sym_table[bucket2], "label2", 0x30000000);
+  */
   // print_linked_list(sym_table[bucket]);
+  add_to_sym_table(sym_table, "label1", 0x30000000);
+  add_to_sym_table(sym_table, "label2", 0x30100000);
+
   print_sym_table(sym_table);
+  free_sym_table(sym_table);
 }
