@@ -16,8 +16,7 @@
 
 #ignore junk files from compiling C code
 *.o
-emulate
-assemble
+*.out
 
 #ignore other junk files
 *.backup
