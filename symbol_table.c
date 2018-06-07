@@ -20,15 +20,11 @@ static const uint32_t s = 2654435769;
 
 uint32_t hash(const char key[MAX_LINE_LENGTH]) {
   float A = s/pow(2, wordSize);
-  uint32_t keyInt = 0;
-  for (uint32_t i = 0; i < strlen(key); i++) {
-		printf("%c ", key[i]);
+  uint32_t keyInt;
+  for (uint32_t i = 0; i < MAX_LINE_LENGTH; i++) {
     keyInt += (key[i] * i);
   }
-	//printf("%u, %f\n", keyInt, keyInt * A);
-  //float x = ((float) (A * keyInt) - (int) (A * keyInt));
-	//printf("%f\n", x);
-  return floor(tableSize * ((float) (A * keyInt) - (int) (A * keyInt)));
+  return floor(tableSize * ((A * keyInt) - (uint32_t) (A * keyInt)));
 }
 
 /* Node data structure. Many of these can be strung together to 
@@ -48,7 +44,6 @@ static node* node_malloc(void) {
     exit(EXIT_FAILURE);
   }
   memset(n->label, '\0', sizeof(char)*MAX_LINE_LENGTH); 
-	// printf("%s\n", n->label);
   return n;
 }
 
@@ -65,9 +60,7 @@ static uint32_t get_node_key(node *n) {
 
 /* Sets the key of a given node */
 static void set_node_label_address(node *n, const char label[MAX_LINE_LENGTH], uint32_t address) {
-	// n->label = label;
-  strcpy(n->label, label); //, sizeof(char)*strlen(label)); 
-	// printf("here: %s\n", n->label);
+  memcpy(n->label, label, sizeof(char)*MAX_LINE_LENGTH); 
   n->address = address;
 }
 
@@ -167,13 +160,13 @@ void print_linked_list(node *head) {
 }
 
 void print_sym_table(node **sym_table) {
-  for (uint32_t i = 0; i < tableSize; i++) {
+  for (uint32_t i; i < tableSize; i++) {
     printf("bucket: %u -> ", i); 
     print_linked_list(sym_table[i]);
   } 
 }
 
-int main(void) {
+uint32_t main(void) {
   /*
   node *head = init_linked_list();
   push(&head, "label1", 0x30000000);
@@ -186,15 +179,14 @@ int main(void) {
   // printf("%u\n", hash("label1"));
   uint32_t bucket = hash("label1");
   uint32_t bucket2 = hash("label2");
-	printf("%u %u\n", bucket, bucket2);
-  sym_table[bucket] = init_linked_list();
-  //push(&sym_table[bucket], "label1", 0x30000000);
-  //push(&sym_table[bucket2], "label2", 0x30000000);
-  //print_linked_list(sym_table[bucket]);
+  // sym_table[bucket] = init_linked_list();
+  /*
+  push(&sym_table[bucket], "label1", 0x30000000);
+  push(&sym_table[bucket2], "label2", 0x30000000);
+  */
+  // print_linked_list(sym_table[bucket]);
   add_to_sym_table(sym_table, "label1", 0x30000000);
   add_to_sym_table(sym_table, "label2", 0x30100000);
-	/*
-	*/
 
   print_sym_table(sym_table);
   free_sym_table(sym_table);
