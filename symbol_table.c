@@ -20,11 +20,12 @@ static const uint32_t s = 2654435769;
 
 uint32_t hash(const char key[MAX_LINE_LENGTH]) {
   float A = s/pow(2, wordSize);
-  uint32_t keyInt;
-  for (uint32_t i = 0; i < MAX_LINE_LENGTH; i++) {
+  uint32_t keyInt = 0;
+  for (uint32_t i = 0; i < strlen(key); i++) {
     keyInt += (key[i] * i);
   }
-  return floor(tableSize * ((A * keyInt) - (uint32_t) (A * keyInt)));
+  float x = (A * keyInt) - (uint32_t) (A * keyInt);
+  return floor(tableSize * x);
 }
 
 /* Node data structure. Many of these can be strung together to 
@@ -145,7 +146,7 @@ void add_to_sym_table(node** sym_table, char label[MAX_LINE_LENGTH], uint32_t ad
   push(&sym_table[bucket], label, address);
 }
 
-uint32_t find_in_sym_table(node** sym_table, char label[MAX_LINE_LENGTH], uint32_t address) {
+uint32_t find_in_sym_table(node** sym_table, char label[MAX_LINE_LENGTH]) {
   uint32_t bucket = hash(label);
   return find(sym_table[bucket], label);
 }
@@ -160,13 +161,13 @@ void print_linked_list(node *head) {
 }
 
 void print_sym_table(node **sym_table) {
-  for (uint32_t i; i < tableSize; i++) {
+  for (uint32_t i = 0; i < tableSize; i++) {
     printf("bucket: %u -> ", i); 
     print_linked_list(sym_table[i]);
   } 
 }
 
-uint32_t main(void) {
+int main(void) {
   /*
   node *head = init_linked_list();
   push(&head, "label1", 0x30000000);
@@ -187,6 +188,7 @@ uint32_t main(void) {
   // print_linked_list(sym_table[bucket]);
   add_to_sym_table(sym_table, "label1", 0x30000000);
   add_to_sym_table(sym_table, "label2", 0x30100000);
+	// find_in_sym_table(sym_table, "label1");
 
   print_sym_table(sym_table);
   free_sym_table(sym_table);
