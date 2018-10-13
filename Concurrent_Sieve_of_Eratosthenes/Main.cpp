@@ -26,6 +26,7 @@ int main(int argc, char ** argv)
 
   cout << "print index backwards:" << endl;
   my_index.printIndex('>');
+
   cout << endl;
 
   for(int i = 0; i<10; i++){

@@ -49,10 +49,24 @@ bool Index::search(int key){
 }
 
 bool Index::insert(int key){
-  cerr << "TODO: implement the index insert function" << endl;
-  exit(-1);
-}
 
+	if (head == NULL) {
+		head = tail = new Node(key);
+		return true;
+	}
+
+	Node* cur = head;
+
+	while (cur->getNext() != NULL) {
+		cur = cur->getNext();
+	}
+
+	Node* item = new Node(key);
+	cur->setNext(item);
+	item->setPrev(cur);
+	tail = item;
+	return true;
+}
 
 bool Index::remove(int key){
   cerr << "TODO: implement the index remove function" << endl;
