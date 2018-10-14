@@ -6,17 +6,24 @@
 
 using namespace std;
 
-void sieve_worker(Index* index, int base, int max){
+void sieve_worker(Index* index, int base, int max) {
   cerr << "TODO: implement the sieve workers" << endl;
   exit(-1);
 }
 
-int main(int argc, char ** argv)
-{
+int main(int argc, char** argv) {
+	int max = stoi(argv[1]);
+	cout << max << endl;
 
-  cerr << "TODO: implement the Sieve of Eratosthenes algorithm" << endl;
+	int nums[max - 2];
 
-  Index* sieve_data = new Index(NULL, 0);
+	for (int i = 0; i <= max - 2; i++) {
+		nums[i] = i + 2;
+	}
+
+	cout << nums << endl;
+
+  Index* sieve_data = new Index(nums, max - 2);
 
   // TODO: write code here...
 
@@ -31,5 +38,4 @@ int main(int argc, char ** argv)
   sieve_data->printIndex('>');
 
   delete(sieve_data);
-
 }
