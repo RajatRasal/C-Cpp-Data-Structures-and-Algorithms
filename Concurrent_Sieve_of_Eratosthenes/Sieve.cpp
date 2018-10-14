@@ -1,34 +1,42 @@
 #include <iostream>
 #include <math.h>
-#include <thread>
+#include <typeinfo>
 
 #include "Index.hpp"
 
 using namespace std;
 
 void sieve_worker(Index* index, int base, int max) {
-  cerr << "TODO: implement the sieve workers" << endl;
-  exit(-1);
+	for (int i = 2 * base; i <= max; i += base) {
+		index->remove(i);
+	}
+}
+
+void foo (void) {
+	cout << "foo" << endl;
 }
 
 int main(int argc, char** argv) {
 	int max = stoi(argv[1]);
+	int base_limit = pow(max, 0.5);
 	cout << max << endl;
 
-	int nums[max - 2];
-
-	for (int i = 0; i <= max - 2; i++) {
+	int nums[max - 1];
+	for (int i = 0; i < max - 1; i++) {
 		nums[i] = i + 2;
 	}
-
-	cout << nums << endl;
-
   Index* sieve_data = new Index(nums, max - 2);
 
-  // TODO: write code here...
+	thread sieve_workers[base_limit	+ 1];
 
-  // When all sieve workers have terminated, print out the final state of the index.
-  // All of the values that are left in the index must be prime numbers.
+	for (int i = 0; i < base_limit + 1; i++) {
+		sieve_workers[i] = thread(sieve_worker, sieve_data, i + 2, max - 1);
+	}
+
+	for (thread &t : sieve_workers) {
+		t.join();
+	}
+
   cout << "  print index forwards:" << endl;
   sieve_data->printIndex('<');
 
