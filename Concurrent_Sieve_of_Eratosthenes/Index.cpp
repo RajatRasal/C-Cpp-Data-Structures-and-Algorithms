@@ -1,4 +1,3 @@
-
 #include "Index.hpp"
 
 using namespace std;
@@ -44,22 +43,27 @@ Index::Index(int seeds[], int length){
 }
 
 bool Index::search(int key){
+	lock.lock();
 	Node* cur = head;
 
 	while (cur){
 		if (cur->getItem() == key){
+	    lock.unlock();
 			return true;
 		}
 		cur = cur->getNext();
 	}
 
+	lock.unlock();
 	return false;
 }
 
 bool Index::insert(int key){
+	lock.lock();
 
 	if (head == NULL){
 		head = tail = new Node(key);
+	  lock.unlock();
 		return true;
 	}
 
@@ -73,10 +77,12 @@ bool Index::insert(int key){
 	cur->setNext(item);
 	item->setPrev(cur);
 	tail = item;
+	lock.unlock();
 	return true;
 }
 
 bool Index::remove(int key){
+	lock.lock();
 	Node* cur = head;
 
 	while (cur) {
@@ -94,11 +100,13 @@ bool Index::remove(int key){
 			  cur->getPrev()->setNext(cur->getNext());
 			  cur->getNext()->setPrev(cur->getPrev());
 			}
+			lock.unlock();
 			return true;
 		}
 		cur = cur->getNext();
 	}
 
+	lock.unlock();
 	return false;
 }
 

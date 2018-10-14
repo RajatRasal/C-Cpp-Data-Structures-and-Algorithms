@@ -23,6 +23,9 @@ class Node {
 
   public:
 
+		// Lock
+		mutex lock;
+
     // class constructor, takes key value and prev/next list elements
     Node(int item);
 
@@ -46,6 +49,9 @@ class Index {
     Node* tail;
     
   public:
+
+		// Lock
+		mutex lock;
 
     // class constructor, loads an image from a provided file (or URL?)
     Index(int seeds[], int length);
