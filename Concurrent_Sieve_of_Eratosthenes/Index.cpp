@@ -44,20 +44,28 @@ Index::Index(int seeds[], int length){
 }
 
 bool Index::search(int key){
-  cerr << "TODO: implement the index search function" << endl;
-  exit(-1);
+	Node* cur = head;
+
+	while (cur){
+		if (cur->getItem() == key){
+			return true;
+		}
+		cur = cur->getNext();
+	}
+
+	return false;
 }
 
 bool Index::insert(int key){
 
-	if (head == NULL) {
+	if (head == NULL){
 		head = tail = new Node(key);
 		return true;
 	}
 
 	Node* cur = head;
 
-	while (cur->getNext() != NULL) {
+	while (cur->getNext()){
 		cur = cur->getNext();
 	}
 
