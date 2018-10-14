@@ -63,46 +63,41 @@ bool Index::search(int key) {
 }
 
 bool Index::insert(int key) {
+	Node* item = new Node(key);
+
 	if (head == NULL) {
-		head = tail = new Node(key);
-		return true;
+		head = tail = item;
+	} else {
+	  tail->setNext(item);
+	  item->setPrev(tail);
+	  tail = item;
 	}
 
-	Node* item = new Node(key);
-	tail->setNext(item);
-	item->setPrev(tail);
-	tail = item;
 	return true;
 }
 
 bool Index::remove(int key) {
 	// lock.lock();
 	
-	Node* cur = head;
+	Node* node = find(key);
 
-	while (cur) {
-		if (cur->getItem() == key) {
-			if (cur == tail && cur == head) {
-				head = NULL;
-				tail = NULL;
-			} else if (cur == head) {
-				head = cur->getNext();
-				head->setPrev(NULL);
-			} else if (cur == tail) {
-				tail = cur->getPrev();
-				tail->setNext(NULL);
-			} else {
-			  cur->getPrev()->setNext(cur->getNext());
-			  cur->getNext()->setPrev(cur->getPrev());
-			}
-			// lock.unlock();
-			return true;
-		}
-		cur = cur->getNext();
+	if ((head == NULL && tail == NULL) || !node) {
+		return false;
+	} else if (node == tail && node == head) {
+		head = NULL;
+		tail = NULL;
+	} else if (node == head) {
+		head = node->getNext();
+		head->setPrev(NULL);
+	} else if (node == tail) {
+		tail = node->getPrev();
+		tail->setNext(NULL);
+	} else {
+	  node->getPrev()->setNext(node->getNext());
+	  node->getNext()->setPrev(node->getPrev());
 	}
 
-	// lock.unlock();
-	return false;
+	return true;
 }
 
 void Index::printIndex(char order) {
