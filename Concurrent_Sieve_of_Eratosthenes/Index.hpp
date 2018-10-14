@@ -47,6 +47,10 @@ class Index {
     // pointers to the head and tail of the doubly linked list
     Node* head;
     Node* tail;
+
+		// finds element being looked for in the index for use by 
+		// search, remove and insert
+		Node* find(int key);
     
   public:
 

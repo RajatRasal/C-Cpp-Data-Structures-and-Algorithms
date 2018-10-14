@@ -42,47 +42,42 @@ Index::Index(int seeds[], int length){
   }
 }
 
-bool Index::search(int key){
-	lock.lock();
+Node* Index::find(int key) {
+	// lock.lock();
+
 	Node* cur = head;
 
-	while (cur){
-		if (cur->getItem() == key){
-	    lock.unlock();
-			return true;
+	while (cur) {
+		if (cur->getItem() == key) {
+			return cur;
 		}
 		cur = cur->getNext();
 	}
 
-	lock.unlock();
-	return false;
+	// lock.unlock();
+	return NULL;
 }
 
-bool Index::insert(int key){
-	lock.lock();
+bool Index::search(int key) {
+	return find(key);
+}
 
-	if (head == NULL){
+bool Index::insert(int key) {
+	if (head == NULL) {
 		head = tail = new Node(key);
-	  lock.unlock();
 		return true;
 	}
 
-	Node* cur = head;
-
-	while (cur->getNext()){
-		cur = cur->getNext();
-	}
-
 	Node* item = new Node(key);
-	cur->setNext(item);
-	item->setPrev(cur);
+	tail->setNext(item);
+	item->setPrev(tail);
 	tail = item;
-	lock.unlock();
 	return true;
 }
 
-bool Index::remove(int key){
-	lock.lock();
+bool Index::remove(int key) {
+	// lock.lock();
+	
 	Node* cur = head;
 
 	while (cur) {
@@ -100,13 +95,13 @@ bool Index::remove(int key){
 			  cur->getPrev()->setNext(cur->getNext());
 			  cur->getNext()->setPrev(cur->getPrev());
 			}
-			lock.unlock();
+			// lock.unlock();
 			return true;
 		}
 		cur = cur->getNext();
 	}
 
-	lock.unlock();
+	// lock.unlock();
 	return false;
 }
 
