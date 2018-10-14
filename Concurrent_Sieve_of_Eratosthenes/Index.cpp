@@ -77,18 +77,39 @@ bool Index::insert(int key){
 }
 
 bool Index::remove(int key){
-  cerr << "TODO: implement the index remove function" << endl;
-  exit(-1);
+	Node* cur = head;
+
+	while (cur) {
+		if (cur->getItem() == key) {
+			if (cur == tail && cur == head) {
+				head = NULL;
+				tail = NULL;
+			} else if (cur == head) {
+				head = cur->getNext();
+				head->setPrev(NULL);
+			} else if (cur == tail) {
+				tail = cur->getPrev();
+				tail->setNext(NULL);
+			} else {
+			  cur->getPrev()->setNext(cur->getNext());
+			  cur->getNext()->setPrev(cur->getPrev());
+			}
+			return true;
+		}
+		cur = cur->getNext();
+	}
+
+	return false;
 }
 
-void Index::printIndex(char order){
+void Index::printIndex(char order) {
 
   Node* start;
 
   // configure traversal order
-  if(order == '<'){
+  if (order == '<') {
     start = head;
-  } else if(order == '>'){
+  } else if (order == '>') {
     start = tail;
   } else {
     cerr << "ERROR: unrecognised input order " << order << endl;
@@ -100,14 +121,14 @@ void Index::printIndex(char order){
   cout << "|--";
 
   // traverse the index elements
-  while(nxt != NULL){
+  while (nxt != NULL) {
 
-    if(nxt != start){
+    if (nxt != start) {
       cout<< "<-->";
     } 
 
     cur = nxt;
-    if(order == '<'){
+    if (order == '<') {
       nxt = cur->getNext();
     } else {
       nxt = cur->getPrev();
