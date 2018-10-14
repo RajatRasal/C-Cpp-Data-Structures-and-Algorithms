@@ -43,18 +43,19 @@ Index::Index(int seeds[], int length){
 }
 
 Node* Index::find(int key) {
-	// lock.lock();
+	lock.lock();
 
 	Node* cur = head;
 
 	while (cur) {
 		if (cur->getItem() == key) {
+	    lock.unlock();
 			return cur;
 		}
 		cur = cur->getNext();
 	}
 
-	// lock.unlock();
+	lock.unlock();
 	return NULL;
 }
 
